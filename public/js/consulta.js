@@ -9,8 +9,10 @@ form.addEventListener('submit', async function(event) {
 
     const resultado = document.getElementById('resultado');
     if (response.ok) {
-        resultado.innerText = `Usuário encontrado: ${data.nome} (${data.cpf})`;
+        resultado.innerText = `Sua CIN está pronta  Sala Sensorial / Alece: ${data.nome} (${data.cpf})
+        A retirada será feita na Asselmbleia, anexo III, 3º andar.
+        A entrega da CIN sera feita para o requerente ou responsavel legal, portando documento comprobatorio.`;
     } else {
-        resultado.innerText = 'Usuário não encontrado';
+        resultado.innerText = 'A sua CIN nao ficou pronta ainda!';
     }
 });

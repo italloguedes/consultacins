@@ -3,27 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastrar Usuário</title>
+    <title>Consulta de Usuário por CPF</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
     <div class="container">
-        <h1>Cadastrar Usuário</h1>
-        <form id="formUsuario">
-            <label for="nome">Nome:</label>
-            <input type="text" id="nome" name="nome" required>
-
-            <label for="cpf">CPF:</label>
+        <h1>Consulte a CIN pelo CPF</h1>
+    
+        <form id="formConsulta">
+            <label for="cpf">Digite o CPF (Não utilizar "/.-,"):</label>
             <input type="text" id="cpf" name="cpf" required>
 
-            <button type="submit">Cadastrar</button>
+            <button type="submit">Consultar</button>
         </form>
 
         <div id="resultado"></div>
 
-        <a href="consulta.html">Consultar Usuário</a>
+        <a href="consulta.html">Cadastrar Cins</a>
     </div>
-    <script src="js/cadastro.js"></script>
-
+    <script src="js/consulta.js"></script>
 </body>
 </html>
