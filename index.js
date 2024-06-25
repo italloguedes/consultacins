@@ -2,6 +2,8 @@ const express = require('express');
 const fs = require('fs/promises');
 const path = require('path');
 const bodyParser = require('body-parser');
+const dotenv = require('dotenv');
+dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -12,7 +14,7 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Servindo arquivos estáticos (index.html, scripts, folhas de estilo, etc.)
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Rota para adicionar um novo usuário
 app.post('/usuarios', async (req, res) => {
@@ -38,7 +40,7 @@ app.post('/usuarios', async (req, res) => {
             console.error('Erro ao escrever no arquivo de dados:', error);
         }
         
-        res.status(201).json({ message: 'Usuário cadastrado com sucesso' });
+        res.status(201).json({ nome, cpf });
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
