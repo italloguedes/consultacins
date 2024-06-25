@@ -1,27 +1,11 @@
 const express = require('express');
-const mongoose = require('mongoose');
-const dotenv = require('dotenv');
+const fs = require('fs/promises');
+const path = require('path');
 const bodyParser = require('body-parser');
-dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3000;
-const MONGODB_URI = process.env.MONGODB_URI;
-
-// Conexão com o MongoDB usando Mongoose
-mongoose.connect(MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-}).then(() => console.log('MongoDB connected'))
-  .catch(err => console.error('Connection error', err));
-
-// Schema e Model para Usuário
-const userSchema = new mongoose.Schema({
-    nome: String,
-    cpf: String
-});
-
-const User = mongoose.model('User', userSchema);
+const dataFilePath = path.join(__dirname, 'data', 'usuarios.json');
 
 // Middleware para aceitar JSON no corpo das requisições
 app.use(express.json());
@@ -34,9 +18,27 @@ app.use(express.static('public'));
 app.post('/usuarios', async (req, res) => {
     try {
         const { nome, cpf } = req.body;
-        const newUser = new User({ nome, cpf });
-        const savedUser = await newUser.save();
-        res.status(201).json(savedUser);
+        
+        // Carrega os dados atuais do arquivo JSON
+        let usuarios = [];
+        try {
+            const data = await fs.readFile(dataFilePath, 'utf8');
+            usuarios = JSON.parse(data);
+        } catch (error) {
+            console.error('Erro ao ler o arquivo de dados:', error);
+        }
+        
+        // Adiciona o novo usuário ao array
+        usuarios.push({ nome, cpf });
+        
+        // Salva os dados atualizados de volta no arquivo JSON
+        try {
+            await fs.writeFile(dataFilePath, JSON.stringify(usuarios, null, 2));
+        } catch (error) {
+            console.error('Erro ao escrever no arquivo de dados:', error);
+        }
+        
+        res.status(201).json({ message: 'Usuário cadastrado com sucesso' });
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
@@ -46,13 +48,24 @@ app.post('/usuarios', async (req, res) => {
 app.get('/usuarios/:cpf', async (req, res) => {
     try {
         const cpf = req.params.cpf;
-        const user = await User.findOne({ cpf });
-
-        if (!user) {
+        
+        // Carrega os dados atuais do arquivo JSON
+        let usuarios = [];
+        try {
+            const data = await fs.readFile(dataFilePath, 'utf8');
+            usuarios = JSON.parse(data);
+        } catch (error) {
+            console.error('Erro ao ler o arquivo de dados:', error);
+        }
+        
+        // Busca o usuário pelo CPF
+        const usuario = usuarios.find(u => u.cpf === cpf);
+        
+        if (!usuario) {
             return res.status(404).json({ message: 'Usuário não encontrado' });
         }
-
-        res.json(user);
+        
+        res.json(usuario);
     } catch (err) {
         res.status(500).json({ message: err.message });
     }

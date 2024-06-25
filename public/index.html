@@ -4,42 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastrar Usuário</title>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <h1>Cadastrar Usuário</h1>
-    <form id="formUsuario">
-        <label for="nome">Nome:</label><br>
-        <input type="text" id="nome" name="nome" required><br><br>
+    <div class="container">
+        <h1>Cadastrar Usuário</h1>
+        <form id="formUsuario">
+            <label for="nome">Nome:</label>
+            <input type="text" id="nome" name="nome" required>
 
-        <label for="cpf">CPF:</label><br>
-        <input type="text" id="cpf" name="cpf" required><br><br>
+            <label for="cpf">CPF:</label>
+            <input type="text" id="cpf" name="cpf" required>
 
-        <button type="submit">Cadastrar</button>
-    </form>
+            <button type="submit">Cadastrar</button>
+        </form>
 
-    <div id="resultado"></div>
+        <div id="resultado"></div>
 
-    <script>
-        const form = document.getElementById('formUsuario');
-        form.addEventListener('submit', async function(event) {
-            event.preventDefault();
+        <a href="consulta.html">Consultar Usuário</a>
+    </div>
+    <script src="js/cadastro.js"></script>
 
-            const nome = document.getElementById('nome').value;
-            const cpf = document.getElementById('cpf').value;
-
-            const response = await fetch('/usuarios', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ nome, cpf })
-            });
-
-            const data = await response.json();
-            document.getElementById('resultado').innerText = `Usuário cadastrado: ${data.nome} (${data.cpf})`;
-        });
-    </script>
-
-    <a href="consulta.html">Consultar Usuario!</a>
 </body>
 </html>
