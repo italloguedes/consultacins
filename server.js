@@ -10,6 +10,10 @@ const app = express();
 const port = process.env.PORT || 3000;
 const MONGODB_URI = process.env.MONGODB_URI;
 
+// Middleware para processar requisições JSON
+app.use(bodyParser.json());
+
+// Conexão com o MongoDB usando Mongoose
 mongoose.connect(MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -17,25 +21,29 @@ mongoose.connect(MONGODB_URI, {
 .then(() => console.log('Conectado ao MongoDB'))
 .catch(err => console.error('Erro de conexão com o MongoDB:', err));
 
+// Definindo o esquema do usuário
 const userSchema = new mongoose.Schema({
   fullName: String,
   cpf: String,
 });
 
+// Criando o modelo User baseado no esquema
 const User = mongoose.model('User', userSchema);
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+// Servindo arquivos estáticos da pasta 'public'
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Rota para enviar o arquivo index.html ao acessar '/'
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+// Rota para enviar o arquivo cadastro.html ao acessar '/cadastro'
 app.get('/cadastro', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'cadastro.html'));
 });
 
+// Rota para cadastrar um novo usuário
 app.post('/cadastro', async (req, res) => {
   const { fullName, cpf } = req.body;
 
@@ -49,6 +57,7 @@ app.post('/cadastro', async (req, res) => {
   }
 });
 
+// Rota para consultar um usuário por nome ou CPF
 app.get('/consulta', async (req, res) => {
   const { query } = req.query;
 
@@ -61,9 +70,9 @@ app.get('/consulta', async (req, res) => {
     });
 
     if (users.length > 0) {
-      res.send('Sua CIN está pronta para retirada.');
+      res.send('Usuário encontrado: ' + users.map(user => `${user.fullName} (${user.cpf})`).join(', '));
     } else {
-      res.send('Que a CIN ainda não ficou pronta.');
+      res.send('Usuário não encontrado.');
     }
   } catch (error) {
     console.error('Erro ao consultar usuário:', error);
@@ -71,6 +80,7 @@ app.get('/consulta', async (req, res) => {
   }
 });
 
+// Iniciando o servidor na porta especificada
 app.listen(port, () => {
   console.log(`Servidor rodando em http://localhost:${port}`);
 });
