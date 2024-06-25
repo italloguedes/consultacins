@@ -1,16 +1,45 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Consulta de Usuário</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar Usuário</title>
 </head>
 <body>
-  <h1>Consulta de Usuário</h1>
-  <form action="/consulta" method="GET">
-    <label for="query">Consultar por nome completo ou CPF:</label><br>
-    <input type="text" id="query" name="query" required><br><br>
-    <button type="submit">Consultar</button>
-  </form>
+    <h1>Cadastrar Usuário</h1>
+    <form id="formUsuario">
+        <label for="nome">Nome:</label><br>
+        <input type="text" id="nome" name="nome" required><br><br>
+
+        <label for="cpf">CPF:</label><br>
+        <input type="text" id="cpf" name="cpf" required><br><br>
+
+        <button type="submit">Cadastrar</button>
+    </form>
+
+    <div id="resultado"></div>
+
+    <script>
+        const form = document.getElementById('formUsuario');
+        form.addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const nome = document.getElementById('nome').value;
+            const cpf = document.getElementById('cpf').value;
+
+            const response = await fetch('/usuarios', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ nome, cpf })
+            });
+
+            const data = await response.json();
+            document.getElementById('resultado').innerText = `Usuário cadastrado: ${data.nome} (${data.cpf})`;
+        });
+    </script>
+
+    <a href="consulta.html">Consultar Usuario!</a>
 </body>
 </html>

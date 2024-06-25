@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta de Usuário por CPF</title>
+</head>
+<body>
+    <h1>Consulta de Usuário por CPF</h1>
+    <form id="formConsulta">
+        <label for="cpf">Digite o CPF:</label><br>
+        <input type="text" id="cpf" name="cpf" required><br><br>
+
+        <button type="submit">Consultar</button>
+    </form>
+
+    <div id="resultado"></div>
+
+    <a href="/index.html">Voltar para a página inicial</a>
+
+    <script>
+        const form = document.getElementById('formConsulta');
+        form.addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const cpf = document.getElementById('cpf').value;
+
+            const response = await fetch(`/usuarios/${cpf}`);
+            const data = await response.json();
+
+            const resultado = document.getElementById('resultado');
+            if (response.ok) {
+                resultado.innerText = `Usuário encontrado: ${data.nome} (${data.cpf})`;
+            } else {
+                resultado.innerText = 'Usuário não encontrado';
+            }
+        });
+    </script>
+</body>
+</html>
