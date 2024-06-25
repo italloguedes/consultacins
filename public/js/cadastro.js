@@ -14,5 +14,5 @@ form.addEventListener('submit', async function(event) {
     });
 
     const data = await response.json();
-    document.getElementById('resultado').innerText = `Usuário cadastrado: ${data.nome} (${data.cpf})`;
+    document.getElementById('resultado').innerText = `Cin cadastrada com sucesso!: ${data.nome} (${data.cpf})`;
 });

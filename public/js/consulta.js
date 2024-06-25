@@ -13,6 +13,6 @@ form.addEventListener('submit', async function(event) {
         A retirada será feita na Asselmbleia, anexo III, 3º andar.
         A entrega da CIN sera feita para o requerente ou responsavel legal, portando documento comprobatorio.`;
     } else {
-        resultado.innerText = 'A sua CIN nao ficou pronta ainda!';
+        resultado.innerText = 'A sua CIN ainda não está pronta!!';
     }
 });
