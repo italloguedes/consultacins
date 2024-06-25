@@ -1,10 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const path = require('path');
+const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
-const { requireAuth } = require('./middleware/authMiddleware');
 
 dotenv.config();
+
 const app = express();
 const port = process.env.PORT || 3000;
 const MONGODB_URI = process.env.MONGODB_URI;
@@ -12,38 +12,59 @@ const MONGODB_URI = process.env.MONGODB_URI;
 mongoose.connect(MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-}).then(() => {
-  console.log('Conectado ao MongoDB Atlas');
-}).catch(err => {
-  console.error('Erro de conexão com o MongoDB:', err);
-  process.exit(1);
+})
+.then(() => console.log('Conectado ao MongoDB'))
+.catch(err => console.error('Erro de conexão com o MongoDB:', err));
+
+const userSchema = new mongoose.Schema({
+  fullName: String,
+  cpf: String,
 });
 
-app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+const User = mongoose.model('User', userSchema);
 
-// Rota para consultar usuários por nome completo ou CPF
-app.get('/api/users', requireAuth, async (req, res) => {
-  const query = req.query.query;
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(express.static('public'));
+
+app.get('/', (req, res) => {
+  res.sendFile(__dirname + '/public/index.html');
+});
+
+app.post('/cadastro', async (req, res) => {
+  const { fullName, cpf } = req.body;
 
   try {
-    // Realizar a consulta no banco de dados
-    const users = await User.find({
-      $or: [
-        { fullName: { $regex: query, $options: 'i' } }, // Consulta por nome completo
-        { cpf: query } // Consulta por CPF
-      ]
-    });
-
-    res.json(users);
+    const newUser = new User({ fullName, cpf });
+    await newUser.save();
+    res.send('Cadastro realizado com sucesso!');
   } catch (error) {
-    console.error('Erro ao consultar usuários:', error);
-    res.status(500).json({ error: 'Erro ao consultar usuários' });
+    console.error('Erro ao cadastrar usuário:', error);
+    res.status(500).send('Erro ao cadastrar usuário');
   }
 });
 
-// Rota para proteger as operações de cadastro
-app.use('/api/auth', require('./routes/authRoutes'));
+app.get('/consulta', async (req, res) => {
+  const { query } = req.query;
+
+  try {
+    const users = await User.find({
+      $or: [
+        { fullName: { $regex: query, $options: 'i' } },
+        { cpf: query }
+      ]
+    });
+
+    if (users.length > 0) {
+      res.send('Sua CIN está pronta para retirada.');
+    } else {
+      res.send('Que a CIN ainda não ficou pronta.');
+    }
+  } catch (error) {
+    console.error('Erro ao consultar usuário:', error);
+    res.status(500).send('Erro ao consultar usuário');
+  }
+});
 
 app.listen(port, () => {
   console.log(`Servidor rodando em http://localhost:${port}`);

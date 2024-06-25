@@ -4,25 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cadastro de Usuário</title>
-  <link rel="stylesheet" href="/css/styles.css"> <!-- Arquivo CSS -->
 </head>
 <body>
   <h1>Cadastro de Usuário</h1>
-  <form id="registerForm">
-    <label for="fullName">Nome completo:</label>
-    <input type="text" id="fullName" name="fullName" required>
-    <br><br>
-    <label for="registerCpf">CPF:</label>
-    <input type="text" id="registerCpf" name="cpf" required>
-    <br><br>
-    <label for="registerPassword">Senha:</label>
-    <input type="password" id="registerPassword" name="password" required>
-    <br><br>
+  <form action="/cadastro" method="POST">
+    <label for="fullName">Nome completo:</label><br>
+    <input type="text" id="fullName" name="fullName" required><br><br>
+    <label for="cpf">CPF:</label><br>
+    <input type="text" id="cpf" name="cpf" required pattern="[0-9]{11}" title="Digite um CPF válido (11 dígitos numéricos)"><br><br>
     <button type="submit">Cadastrar</button>
   </form>
-
-  <div id="message"></div>
-
-  <script src="/js/register.js"></script> <!-- Arquivo JavaScript -->
 </body>
 </html>
